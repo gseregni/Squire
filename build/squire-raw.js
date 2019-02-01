@@ -403,7 +403,6 @@ function createElement ( doc, tag, props, children ) {
 }
 
 function fixCursor ( node, root ) {
-    return node
     // In Webkit and Gecko, block level elements are collapsed and
     // unfocussable if they have no content. To remedy this, a <BR> must be
     // inserted. In Opera and IE, we just need a textnode in order for the
@@ -467,10 +466,10 @@ function fixCursor ( node, root ) {
             }
         }
         else if ( !node.querySelector( 'BR' ) ) {
-            fixer = createElement( doc, 'BR' );
-            while ( ( child = node.lastElementChild ) && !isInline( child ) ) {
-                node = child;
-            }
+            // fixer = createElement( doc, 'BR' );
+            // while ( ( child = node.lastElementChild ) && !isInline( child ) ) {
+            //     node = child;
+            // }
         }
     }
     if ( fixer ) {
@@ -2679,7 +2678,7 @@ function Squire ( root, config ) {
 
     // Need to register instance before calling setHTML, so that the fixCursor
     // function can lookup any default block tag options set.
-    this.setHTML( '' );
+    // this.setHTML( '' );
 }
 
 var proto = Squire.prototype;
@@ -4208,6 +4207,10 @@ proto.getHTML = function ( withBookMark ) {
     }
     return html;
 };
+
+proto.setDOM = function(node) {
+
+}
 
 proto.setHTML = function ( html ) {
     var config = this._config;

@@ -144,7 +144,7 @@ function Squire ( root, config ) {
 
     // Need to register instance before calling setHTML, so that the fixCursor
     // function can lookup any default block tag options set.
-    this.setHTML( '' );
+    // this.setHTML( '' );
 }
 
 var proto = Squire.prototype;
@@ -1673,6 +1673,10 @@ proto.getHTML = function ( withBookMark ) {
     }
     return html;
 };
+
+proto.setDOM = function(node) {
+
+}
 
 proto.setHTML = function ( html ) {
     var config = this._config;

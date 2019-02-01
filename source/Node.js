@@ -224,7 +224,6 @@ function createElement ( doc, tag, props, children ) {
 }
 
 function fixCursor ( node, root ) {
-    return node
     // In Webkit and Gecko, block level elements are collapsed and
     // unfocussable if they have no content. To remedy this, a <BR> must be
     // inserted. In Opera and IE, we just need a textnode in order for the
@@ -288,10 +287,10 @@ function fixCursor ( node, root ) {
             }
         }
         else if ( !node.querySelector( 'BR' ) ) {
-            fixer = createElement( doc, 'BR' );
-            while ( ( child = node.lastElementChild ) && !isInline( child ) ) {
-                node = child;
-            }
+            // fixer = createElement( doc, 'BR' );
+            // while ( ( child = node.lastElementChild ) && !isInline( child ) ) {
+            //     node = child;
+            // }
         }
     }
     if ( fixer ) {
