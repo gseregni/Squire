@@ -224,6 +224,7 @@ function createElement ( doc, tag, props, children ) {
 }
 
 function fixCursor ( node, root ) {
+    return node
     // In Webkit and Gecko, block level elements are collapsed and
     // unfocussable if they have no content. To remedy this, a <BR> must be
     // inserted. In Opera and IE, we just need a textnode in order for the
