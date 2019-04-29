@@ -100,18 +100,31 @@ function areAlike ( node, node2 ) {
     );
 }
 function hasTagAttributes ( node, tag, attributes ) {
-    if ( node.nodeName !== tag ) {
+    if ( node.nodeName !== tag && tag != "*" ) {
         return false;
     }
+    
     for ( var attr in attributes ) {
-        if ( node.getAttribute( attr ) !== attributes[ attr ] ) {
-            return false;
+        // fix : special treatment for class
+        if (attr == "class") {
+            return node.classList.contains(attributes[attr])        
         }
+        else
+            if ( node.getAttribute( attr ) !== attributes[ attr ] ) {
+                return false;
+            }
     }
     return true;
 }
 function getNearest ( node, root, tag, attributes ) {
+    if (node.nodeType == Node.TEXT_NODE) {
+        node = node.parentNode
+        if (root == node)
+            root = root.parentNode
+    }
+
     while ( node && node !== root ) {
+        
         if ( hasTagAttributes( node, tag, attributes ) ) {
             return node;
         }

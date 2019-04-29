@@ -279,18 +279,31 @@ function areAlike ( node, node2 ) {
     );
 }
 function hasTagAttributes ( node, tag, attributes ) {
-    if ( node.nodeName !== tag ) {
+    if ( node.nodeName !== tag && tag != "*" ) {
         return false;
     }
+    
     for ( var attr in attributes ) {
-        if ( node.getAttribute( attr ) !== attributes[ attr ] ) {
-            return false;
+        // fix : special treatment for class
+        if (attr == "class") {
+            return node.classList.contains(attributes[attr])        
         }
+        else
+            if ( node.getAttribute( attr ) !== attributes[ attr ] ) {
+                return false;
+            }
     }
     return true;
 }
 function getNearest ( node, root, tag, attributes ) {
+    if (node.nodeType == Node.TEXT_NODE) {
+        node = node.parentNode
+        if (root == node)
+            root = root.parentNode
+    }
+
     while ( node && node !== root ) {
+        
         if ( hasTagAttributes( node, tag, attributes ) ) {
             return node;
         }
@@ -1162,7 +1175,11 @@ var moveRangeBoundariesUpTree = function ( range, startMax, endMax, root ) {
 var getStartBlockOfRange = function ( range, root ) {
     var container = range.startContainer,
         block;
-
+    // fix - handle text node income
+    if (container.nodeType == Node.TEXT_NODE) {
+        container = container.parentNode
+        root = container.parentNode
+    }
     // If inline, get the containing block.
     if ( isInline( container ) ) {
         block = getPreviousBlock( container, root );
@@ -1181,7 +1198,11 @@ var getStartBlockOfRange = function ( range, root ) {
 var getEndBlockOfRange = function ( range, root ) {
     var container = range.endContainer,
         block, child;
-
+    // fix - handle text node income
+    if (container.nodeType == Node.TEXT_NODE) {
+        container = container.parentNode
+        root = container.parentNode
+    }
     // If inline, get the containing block.
     if ( isInline( container ) ) {
         block = getPreviousBlock( container, root );
@@ -3453,11 +3474,11 @@ proto.hasFormat = function ( tag, attributes, range ) {
     var common = range.commonAncestorContainer;
     var walker, node;
     // if we get a text_node can't use it on getnearest
-    if (common.nodeType == Node.TEXT_NODE)
-        common = common.parentElement
-    // fix root == common does not work in getnerest
-    if (root == common) 
-        root = root.parentElement
+    // if (common.nodeType == Node.TEXT_NODE)
+    //     common = common.parentElement
+    // // fix root == common does not work in getnerest
+    // if (root == common) 
+    //     root = root.parentElement
 
 
     if ( getNearest( common, root, tag, attributes ) ) {
@@ -3816,9 +3837,11 @@ var splitBlock = function ( self, block, node, offset ) {
 };
 
 proto.forEachBlock = function ( fn, mutates, range ) {
-    if ( !range && !( range = this.getSelection() ) ) {
-        return this;
-    }
+    // if ( !range && !( range = this.getSelection() ) ) {
+    //     return this;
+    // }
+
+    range = this.getSelection()
 
     // Save undo checkpoint
     if ( mutates ) {
@@ -3828,6 +3851,7 @@ proto.forEachBlock = function ( fn, mutates, range ) {
     var root = this._root;
     var start = getStartBlockOfRange( range, root );
     var end = getEndBlockOfRange( range, root );
+
     if ( start && end ) {
         do {
             if ( fn( start ) || start === end ) { break; }
@@ -4156,6 +4180,8 @@ proto.decreaseListLevel = function ( range ) {
 };
 
 proto._ensureBottomLine = function () {
+    // fix - seems to behave badly, commented
+    return
     var root = this._root;
     var last = root.lastElementChild;
     if ( !last ||

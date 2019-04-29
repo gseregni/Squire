@@ -919,11 +919,11 @@ proto.hasFormat = function ( tag, attributes, range ) {
     var common = range.commonAncestorContainer;
     var walker, node;
     // if we get a text_node can't use it on getnearest
-    if (common.nodeType == Node.TEXT_NODE)
-        common = common.parentElement
-    // fix root == common does not work in getnerest
-    if (root == common) 
-        root = root.parentElement
+    // if (common.nodeType == Node.TEXT_NODE)
+    //     common = common.parentElement
+    // // fix root == common does not work in getnerest
+    // if (root == common) 
+    //     root = root.parentElement
 
 
     if ( getNearest( common, root, tag, attributes ) ) {
@@ -1282,9 +1282,11 @@ var splitBlock = function ( self, block, node, offset ) {
 };
 
 proto.forEachBlock = function ( fn, mutates, range ) {
-    if ( !range && !( range = this.getSelection() ) ) {
-        return this;
-    }
+    // if ( !range && !( range = this.getSelection() ) ) {
+    //     return this;
+    // }
+
+    range = this.getSelection()
 
     // Save undo checkpoint
     if ( mutates ) {
@@ -1294,6 +1296,7 @@ proto.forEachBlock = function ( fn, mutates, range ) {
     var root = this._root;
     var start = getStartBlockOfRange( range, root );
     var end = getEndBlockOfRange( range, root );
+
     if ( start && end ) {
         do {
             if ( fn( start ) || start === end ) { break; }
@@ -1622,6 +1625,8 @@ proto.decreaseListLevel = function ( range ) {
 };
 
 proto._ensureBottomLine = function () {
+    // fix - seems to behave badly, commented
+    return
     var root = this._root;
     var last = root.lastElementChild;
     if ( !last ||

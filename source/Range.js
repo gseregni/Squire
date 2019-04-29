@@ -430,7 +430,11 @@ var moveRangeBoundariesUpTree = function ( range, startMax, endMax, root ) {
 var getStartBlockOfRange = function ( range, root ) {
     var container = range.startContainer,
         block;
-
+    // fix - handle text node income
+    if (container.nodeType == Node.TEXT_NODE) {
+        container = container.parentNode
+        root = container.parentNode
+    }
     // If inline, get the containing block.
     if ( isInline( container ) ) {
         block = getPreviousBlock( container, root );
@@ -449,7 +453,11 @@ var getStartBlockOfRange = function ( range, root ) {
 var getEndBlockOfRange = function ( range, root ) {
     var container = range.endContainer,
         block, child;
-
+    // fix - handle text node income
+    if (container.nodeType == Node.TEXT_NODE) {
+        container = container.parentNode
+        root = container.parentNode
+    }
     // If inline, get the containing block.
     if ( isInline( container ) ) {
         block = getPreviousBlock( container, root );
