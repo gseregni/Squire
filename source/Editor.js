@@ -891,6 +891,7 @@ proto.redo = function () {
 // Looks for matching tag and attributes, so won't work
 // if <strong> instead of <b> etc.
 proto.hasFormat = function ( tag, attributes, range ) {
+
     // 1. Normalise the arguments and get selection
     tag = tag.toUpperCase();
     if ( !attributes ) { attributes = {}; }
@@ -917,15 +918,23 @@ proto.hasFormat = function ( tag, attributes, range ) {
     var root = this._root;
     var common = range.commonAncestorContainer;
     var walker, node;
+    // if we get a text_node can't use it on getnearest
+    if (common.nodeType == Node.TEXT_NODE)
+        common = common.parentElement
+    // fix root == common does not work in getnerest
+    if (root == common) 
+        root = root.parentElement
+
+
     if ( getNearest( common, root, tag, attributes ) ) {
         return true;
     }
 
     // If common ancestor is a text node and doesn't have the format, we
     // definitely don't have it.
-    if ( common.nodeType === TEXT_NODE ) {
-        return false;
-    }
+    // if ( common.nodeType === TEXT_NODE ) {
+    //     return false;
+    // }
 
     // Otherwise, check each text node at least partially contained within
     // the selection and make sure all of them have the format we want.
