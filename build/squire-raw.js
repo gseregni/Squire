@@ -2364,6 +2364,11 @@ function monitorShiftKey ( event ) {
 }
 
 var onPaste = function ( event ) {
+    var e = {}
+    e.original = event
+    this.fireEvent( 'willPaste', e );
+    return
+
     var clipboardData = event.clipboardData;
 
 
@@ -2467,7 +2472,7 @@ var onPaste = function ( event ) {
         // apps?) copy links as type text/uri-list, but also insert a **blank**
         // text/plain item onto the clipboard. Why? Who knows.
         if ( !choosePlain && ( data = clipboardData.getData( 'text/html' ) ) ) {
-            this.insertHTML( data, true );
+            this.insertHTML( data, isPaste );
         } else if (
                 ( data = clipboardData.getData( 'text/plain' ) ) ||
                 ( data = clipboardData.getData( 'text/uri-list' ) ) ) {
