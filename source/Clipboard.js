@@ -32,6 +32,7 @@ var setClipboardData = function ( clipboardData, node, root, config ) {
 
     clipboardData.setData( 'text/html', html );
     clipboardData.setData( 'text/plain', text );
+    clipboardData.setData( 'pingendo', true );
 
     body.removeChild( node );
 };
@@ -142,6 +143,8 @@ function monitorShiftKey ( event ) {
 
 var onPaste = function ( event ) {
     var clipboardData = event.clipboardData;
+
+
     var items = clipboardData && clipboardData.items;
     var choosePlain = this.isShiftDown;
     var fireDrop = false;
@@ -150,6 +153,12 @@ var onPaste = function ( event ) {
     var htmlItem = null;
     var self = this;
     var l, item, type, types, data;
+    var isPaste = true
+
+
+    if (clipboardData.getData("pingendo"))
+        isPaste = false
+
 
     // Current HTML5 Clipboard interface
     // ---------------------------------
@@ -199,11 +208,11 @@ var onPaste = function ( event ) {
             event.preventDefault();
             if ( htmlItem && ( !choosePlain || !plainItem ) ) {
                 htmlItem.getAsString( function ( html ) {
-                    self.insertHTML( html, true );
+                    self.insertHTML( html, isPaste );
                 });
             } else if ( plainItem ) {
                 plainItem.getAsString( function ( text ) {
-                    self.insertPlainText( text, true );
+                    self.insertPlainText( text, isPaste );
                 });
             }
             return;
